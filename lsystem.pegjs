@@ -1,4 +1,3 @@
-// Tokens
 {
   function makeInteger(o) {
     return parseInt(o.join(""), 10);
@@ -18,8 +17,8 @@ states
     }
 
 state
-    = id:identifier _ "=" _ value:integer {
-	return { "id" : id.value[0], "value" : value.value };
+    = id:identifier _ "=" _ value:expression {
+	return { "id" : id.value, "value" : value.value };
     }
 
 symbols
@@ -28,19 +27,19 @@ symbols
     }
 
 symbol
-    = RotateToken "(" _ args:arguments _ ")" {
+    = _ RotateToken "(" _ args:arguments _ ")" {
 	return { "type" : "rotate", "arguments" : args };
     } /
-      MoveToken "(" _ args:arguments _ ")" {
+      _ MoveToken "(" _ args:arguments _ ")" {
 	return { "type" : "move", "arguments" : args };
     } /
-      AxiomToken "(" _ args:arguments _ ")" {
-	return { "type" : "axiom", "arguments" : args };
+     _ AxiomToken "(" _ state:states _ ")" {
+	return { "type" : "axiom", "state" : state };
     } /
-      StackPushToken {
+      _ StackPushToken {
 	return { "type" : "push" };
     } /
-      StackPopToken {
+      _ StackPopToken {
 	return { "type" : "pop" };  
     }
 
@@ -63,7 +62,7 @@ expression
 
 multiplicative
     = left:primary _ "*" _ right:multiplicative {
-	return { "type" : "multiply", "left" : left, "right" : right };
+	return { "type" : "mul", "left" : left, "right" : right };
     }
     / primary
 
@@ -80,13 +79,12 @@ primary
 identifier
     = id:[a-zA-Z]+ {
 	return {
-	    "type" : "id", "value" : id
+	    "type" : "id", "value" : id[0]
 	};
     }
 
 integer 
   = digits:[0-9]+ {
-  console.log("int!");
     return { "type" : "int", "value" : makeInteger(digits) };
   } /
     "-" int:integer {
