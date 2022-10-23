@@ -64,6 +64,9 @@ multiplicative
     = left:primary _ "*" _ right:multiplicative {
 	return { "type" : "mul", "left" : left, "right" : right };
     }
+    / left:primary _ "/" _ right:multiplicative {
+	return { "type" : "div", "left" : left, "right" : right };
+    }
     / primary
 
 primary
