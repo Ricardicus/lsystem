@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import { parse as LParser } from './lsystem';
-import { Levolve, LexportAsString } from './L';
+import { Levolve, LexportAsString, Lexecute } from './L';
 
 function move(args) {
     console.log("move");
@@ -23,7 +23,7 @@ function test(a) { a.hej = "hej" }
 
 function App() {
     var LSystem = "L(g=0,a=0,c=0) -> mov(2,22/(g+1),2)rot(40)[L(g=g+1,a=a,c=c)]rot(-40)L(g=g+1, a=a, c=c)";
-    var LString = "mov(2,22/(g+1),2)rot(40)[L(g+1)]rot(-40)L(g+1 )";
+    var LString = "mov(2,22/(g+1),2)rot(40)[L(g+1)]rot(-40)L(g+1)";
 
     var a = {"hej": "test"};
     test(a);
@@ -38,7 +38,9 @@ function App() {
     }
     console.log(result);
     var lsystem = { state: {g:0, a:0, c:0}, lstring: lstring, stack: null };
-    Levolve(lsystem, handles, 2) ;
+    Levolve(lsystem, 2);
+    console.log(lsystem);
+    Lexecute(lsystem, handles);
     console.log(lsystem);
     var lsystemExpanded = LexportAsString(lsystem);
 

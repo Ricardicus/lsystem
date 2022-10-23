@@ -63,14 +63,13 @@ function evaluate_expression(state, expression) {
 	throw new Error("Invalid expression");
 }
 
-function evolve(lsystem, handles, iterations) {
+function evolve(lsystem, iterations) {
 	var lstring = lsystem.lstring;
 	if (lsystem.stack == null) {
 		lsystem.stack = new Stack();
 	}
 	var stack = lsystem.stack;
 	if (stack.isEmpty()) {
-		console.log("EMPTY STACK!!!");
 		var state = lsystem.state;
 		var initialState = {};
 		for (const [key, value] of Object.entries(state)) {
@@ -93,9 +92,7 @@ function evolve(lsystem, handles, iterations) {
 				handle_args.push(value);
 			}
 			
-			handles[type](handle_args);
 			symbol["arguments_computed"] = handle_args;
-			console.log("handle_args added: ", handle_args);
 			newlString.push(symbol);
 		} else if (type == "axiom") {
 			var newState = symbol["state"];
@@ -111,8 +108,7 @@ function evolve(lsystem, handles, iterations) {
 				stack.push(newStateS);
 				var newlsystem = { lstring: lstringNew, stack: stack }
 
-				console.log("Going in.. iterations: ", iterations);
-				evolve(newlsystem, handles, iterations - 1);
+				evolve(newlsystem, iterations - 1);
 				newlString.push(newlsystem.lstring);
 			}
 		} else if (type == "push") {
@@ -162,7 +158,28 @@ function exportAsString(lsystem) {
     return result;
 }
 
+function execute(lsystem, handles) {
+	var lstring = lsystem.lstring;
+	for (var i = 0; i < lstring.length; i++) {
+		var symbol = {};
+		Object.assign(symbol,lstring[i]);
+		var isArr = Object.prototype.toString.call(lstring[i]) == '[object Array]';
+		if ( isArr ) {
+		    var lsys = {}
+		    lsys.lstring = lstring[i];
+		    execute(lsys, handles);
+		} else {
+		    var type = symbol["type"];
+		    if (type == "move" || type == "rotate") {
+			var args = symbol["arguments_computed"];
+			handles[type](args);
+		    }
+		}
+	}
+}
+
 module.exports = {
 	Levolve: evolve,
-	LexportAsString: exportAsString
+	LexportAsString: exportAsString,
+	Lexecute: execute
 };
