@@ -39,10 +39,16 @@ function evaluate_expression(state, expression) {
 	} else if (typeof expression == "string") {
 		return state[expression];
 	} else {
-		console.log(expression);
-		var op = expression.type;
-		var left = evaluate_expression(expression.left);
-		var right = evaluate_expression(expression.right);
+		var type = expression.type;
+		if ( type == "id" ) {
+		    return state[expression.value];
+		}
+		if ( type == "int" ) {
+		    return expression.value;
+		}
+		var op = type;
+		var left = evaluate_expression(state, expression.left.value);
+		var right = evaluate_expression(state, expression.right.value);
 		if (op == "add") {
 			return left + right;
 		} else if (op == "sub") {
@@ -61,21 +67,19 @@ function evolve(lsystem, handles, iterations) {
 	}
 	var stack = lsystem.stack;
 	if (stack.isEmpty()) {
+		console.log("EMPTY STACK!!!");
 		var state = lsystem.state;
 		var initialState = {};
-		for (var i = 0; i < state.length; i++) {
-			var id = state.id;
-			var value = state.value;
-			initialState[id] = value;
+		for (const [key,value] of Object.entries(state)) {
+			initialState[key] = value;
 		}
 		stack.push(initialState);
 	}
 	var state = stack.pop();
 	var newlString = [];
-	console.log(lstring);
 	for (var i = 0; i < lstring.length; i++) {
 		var symbol = lstring[i];
-		var type = symbol["type"]
+		var type = symbol["type"];
 		if (type == "move" || type == "rotate") {
 			var args = symbol["arguments"];
 			var handle_args = [];
@@ -90,21 +94,17 @@ function evolve(lsystem, handles, iterations) {
 			var newState = symbol["state"];
 			var newStateS = {}
 			var lstringNew = [...lstring];
-			
-			for (var s = 0; s < newState.length; s++) {
-				var ns = newState[s];
-				newStateS[ns.id] = 0;
+		
+			for (var q = 0; q < newState.length; q++) {
+			    var key = newState[q].id;
+			    var value = newState[q].value;
+			    newStateS[key] = evaluate_expression(state, value);
 			}
-			for (var s = 0; s < newState.length; s++) {
-				var ns = newState[s];
-				var value = evaluate_expression(newStateS, ns.value);
-				newStateS[ns.id] = value;
-			}
-
-			stack.push(newStateS);
-			var newlsystem = {lstring: lstringNew, stack: stack}
 			if ( iterations > 0 ) {
-			    console.log("axiom..");
+			    stack.push(newStateS);
+			    var newlsystem = {lstring: lstringNew, stack: stack}
+	
+			    console.log("Going in.. iterations: ", iterations);
 			    evolve(newlsystem, handles, iterations-1);
 			    newlString.push(newlsystem.lstring);
 			}
@@ -121,7 +121,8 @@ function evolve(lsystem, handles, iterations) {
 }
 
 function exportAsString(lsystem) {
-    
+    var lstring = lsystem.lstring;
+
 }
 
 module.exports = {

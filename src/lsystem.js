@@ -161,7 +161,7 @@ function peg$parse(input, options) {
       peg$c11 = "=",
       peg$c12 = peg$literalExpectation("=", false),
       peg$c13 = function(id, value) {
-      	return { "id" : id.value, "value" : value.value };
+      	return { "id" : id.value, "value" : value };
           },
       peg$c14 = function(first, rest) {
       	return [first].concat(rest.map(function(v){ return v; }));

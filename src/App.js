@@ -19,9 +19,14 @@ var handles = {
     rotate: rotate
 }
 
+function test(a) { a.hej = "hej" }
+
 function App() {
     var LSystem = "L(g=1,a=0,c=0) -> mov(2,22,2)rot(40)[L(g=g+1,a=a,c=c)] rot(-40)L(g=g+1, a=a, c=c)";
     var LString = "mov(2,22,2)rot(40)[L(g+1)]rot(-40)L(g+1)";
+
+    var a = {"hej": "test"};
+    test(a);
 
     var result = "";
     var lstring = LString;
@@ -31,7 +36,6 @@ function App() {
     } catch (error) {
 	result = error;
     }
-    console.log(result);
     var lsystem = { state: {g:0, a:0, c:0}, lstring: lstring, stack: null };
     Levolve(lsystem, handles, 2) ;
 
@@ -40,7 +44,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
 	<pre style={{textAlign:"left"}}>
-{JSON.stringify(result, null, '  ')}
+{JSON.stringify(lsystem, null, '  ')}
 	</pre>
 	</header>
     </div>

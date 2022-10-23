@@ -18,7 +18,7 @@ states
 
 state
     = id:identifier _ "=" _ value:expression {
-	return { "id" : id.value, "value" : value.value };
+	return { "id" : id.value, "value" : value };
     }
 
 symbols
