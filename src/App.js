@@ -3,6 +3,7 @@ import './App.css';
 
 import { parse as LParser } from './lsystem';
 import { Levolve, LexportAsString, Lexecute } from './L';
+import LSystem from './components/Lsystem';
 
 function move(args) {
    console.log("move");
@@ -32,7 +33,7 @@ var handles = {
 function test(a) { a.hej = "hej" }
 
 function App() {
-   var LSystem = "L(g=0,a=0,c=0) -> mov(2,22/(g+1),2)rot(40)[L(g=g+1,a=a,c=c)]rot(-40)L(g=g+1, a=a, c=c)";
+   var LSystemString = "L(g=0,a=0,c=0) -> mov(2,22/(g+1),2)rot(40)[L(g=g+1,a=a,c=c)]rot(-40)L(g=g+1, a=a, c=c)";
    var LString = "mov(2,22/(g+1),2)rot(40)[L(g+1)]rot(-40)L(g+1)";
 
    var a = { "hej": "test" };
@@ -41,7 +42,7 @@ function App() {
    var result = "";
    var lstring = LString;
    try {
-      result = LParser(LSystem);
+      result = LParser(LSystemString);
       lstring = result["rules"];
    } catch (error) {
       result = error;
@@ -70,6 +71,7 @@ function App() {
                {lsystemExpanded}
             </p>
 
+	    <LSystem lstring={lsystemExpanded} />
          </header>
       </div>
    );

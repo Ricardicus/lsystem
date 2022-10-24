@@ -1,37 +1,4 @@
-
-class Stack {
-	constructor() {
-		this.items = [];
-	}
-
-	push(element) {
-		return this.items.push(element);
-	}
-
-	pop() {
-		if (this.items.length > 0) {
-			return this.items.pop();
-		}
-	}
-
-	peek() {
-		return this.items[this.items.length - 1];
-	}
-
-	isEmpty() {
-		return this.items.length == 0;
-	}
-
-	// the size of the stack
-	size() {
-		return this.items.length;
-	}
-
-	// empty the stack
-	clear() {
-		this.items = [];
-	}
-}
+import { Stack } from './stack.js';
 
 function evaluate_expression(state, expression) {
 	if (typeof expression == "number") {
@@ -63,7 +30,7 @@ function evaluate_expression(state, expression) {
 	throw new Error("Invalid expression");
 }
 
-function evolve(lsystem, iterations) {
+export function Levolve(lsystem, iterations) {
 	var lstring = lsystem.lstring;
 	if (lsystem.stack == null) {
 		lsystem.stack = new Stack();
@@ -81,7 +48,7 @@ function evolve(lsystem, iterations) {
 	var newlString = [];
 	for (var i = 0; i < lstring.length; i++) {
 		var symbol = {};
-		Object.assign(symbol,lstring[i]);
+		Object.assign(symbol, lstring[i]);
 		var type = symbol["type"];
 		if (type == "move" || type == "rotate") {
 			var args = symbol["arguments"];
@@ -91,7 +58,7 @@ function evolve(lsystem, iterations) {
 				var value = evaluate_expression(state, args[a]);
 				handle_args.push(value);
 			}
-			
+
 			symbol["arguments_computed"] = handle_args;
 			newlString.push(symbol);
 		} else if (type == "axiom") {
@@ -108,7 +75,7 @@ function evolve(lsystem, iterations) {
 				stack.push(newStateS);
 				var newlsystem = { lstring: lstringNew, stack: stack }
 
-				evolve(newlsystem, iterations - 1);
+				Levolve(newlsystem, iterations - 1);
 				newlString.push(newlsystem.lstring);
 			}
 		} else if (type == "push") {
@@ -123,63 +90,58 @@ function evolve(lsystem, iterations) {
 	lsystem.lstring = newlString;
 }
 
-function exportAsString(lsystem) {
-    var lstring = lsystem.lstring;
-    var result = "";
-    for ( var i = 0; i < lstring.length; i++ ) {
-	var isArr = Object.prototype.toString.call(lstring[i]) == '[object Array]';
-	if ( isArr ) {
-	    var lsys = {}
-	    lsys.lstring = lstring[i];
-	    result += exportAsString(lsys);
-	} else {
-	    var type = lstring[i].type;
-	    if ( type == "pop" ) {
-		result += "]";
-	    } else if ( type == "push" ) {
-		result += "[";
-	    } else if ( type == "move" || type=="rotate" ) {
-		if ( type == "move" ) {
-		    result += "mov";
-		} else if ( type == "rotate" ) {
-		    result += "rot";
+export function LexportAsString(lsystem) {
+	var lstring = lsystem.lstring;
+	var result = "";
+	for (var i = 0; i < lstring.length; i++) {
+		var isArr = Object.prototype.toString.call(lstring[i]) == '[object Array]';
+		if (isArr) {
+			var lsys = {}
+			lsys.lstring = lstring[i];
+			result += LexportAsString(lsys);
+		} else {
+			var type = lstring[i].type;
+			if (type == "pop") {
+				result += "]";
+			} else if (type == "push") {
+				result += "[";
+			} else if (type == "move" || type == "rotate") {
+				if (type == "move") {
+					result += "mov";
+				} else if (type == "rotate") {
+					result += "rot";
+				}
+				result += "(";
+				var args = lstring[i].arguments_computed;
+				for (var q = 0; q < args.length; q++) {
+					result += q > 0 ? "," : "";
+					result += args[q];
+				}
+				result += ")"
+			}
 		}
-		result += "(";
-		var args = lstring[i].arguments_computed;
-		for ( var q = 0; q < args.length; q++ ) {
-		    result += q > 0 ? "," : "";
-		    result += args[q];
-		}
-		result += ")"
-	    }
-	}
 
-    }
-    return result;
+	}
+	return result;
 }
 
-function execute(lsystem, handles) {
+export function Lexecute(lsystem, handles) {
 	var lstring = lsystem.lstring;
 	for (var i = 0; i < lstring.length; i++) {
 		var symbol = {};
-		Object.assign(symbol,lstring[i]);
+		Object.assign(symbol, lstring[i]);
 		var isArr = Object.prototype.toString.call(lstring[i]) == '[object Array]';
-		if ( isArr ) {
-		    var lsys = {}
-		    lsys.lstring = lstring[i];
-		    execute(lsys, handles);
+		if (isArr) {
+			var lsys = {}
+			lsys.lstring = lstring[i];
+			Lexecute(lsys, handles);
 		} else {
-		    var type = symbol["type"];
-		    if (type == "move" || type == "rotate") {
-                var args = symbol["arguments"];
-			    handles[type](args);
-		    }
+			var type = symbol["type"];
+			if (type == "move" || type == "rotate") {
+				var args = symbol["arguments"];
+				handles[type](args);
+			}
 		}
 	}
 }
 
-module.exports = {
-	Levolve: evolve,
-	LexportAsString: exportAsString,
-	Lexecute: execute
-};
