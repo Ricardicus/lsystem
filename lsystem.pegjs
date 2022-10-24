@@ -70,7 +70,8 @@ multiplicative
     / primary
 
 primary
-  = integer
+  = float
+  / integer
   / id:identifier {
     return id;  
   }
@@ -85,6 +86,9 @@ identifier
 	    "type" : "id", "value" : id[0]
 	};
     }
+
+float
+    = left:[0-9]+ "." right:[0-9]+ { return parseFloat(left.join("") + "." +   right.join("")); }
 
 integer 
   = digits:[0-9]+ {

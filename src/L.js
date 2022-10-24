@@ -148,7 +148,7 @@ function exportAsString(lsystem) {
 		var args = lstring[i].arguments_computed;
 		for ( var q = 0; q < args.length; q++ ) {
 		    result += q > 0 ? "," : "";
-		    result += parseInt(args[q]);
+		    result += args[q];
 		}
 		result += ")"
 	    }
@@ -171,8 +171,8 @@ function execute(lsystem, handles) {
 		} else {
 		    var type = symbol["type"];
 		    if (type == "move" || type == "rotate") {
-			var args = symbol["arguments_computed"];
-			handles[type](args);
+                var args = symbol["arguments"];
+			    handles[type](args);
 		    }
 		}
 	}
