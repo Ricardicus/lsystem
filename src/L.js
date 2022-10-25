@@ -11,12 +11,24 @@ function evaluate_expression(state, expression) {
 			return state[expression.value];
 		}
 		if (type == "int") {
-			return expression.value;
+			return evaluate_expression(state, expression.value);
 		}
+        if ( type == "function" ) {
+            var funcID = expression.id;
+            var args = expression.args;
+            if ( funcID == "random" ) {
+                if ( args.length == 2 ) {
+                    var arg1 = evaluate_expression(state, args[0]);
+                    var arg2 = evaluate_expression(state, args[1]);
+                    return arg1 + (arg2-arg1)*Math.random();
+                }
+            }
+            return 0;
+        }
 
 		var op = type;
-		var left = evaluate_expression(state, expression.left.value);
-		var right = evaluate_expression(state, expression.right.value);
+		var left = evaluate_expression(state, expression.left);
+		var right = evaluate_expression(state, expression.right);
 		if (op == "add") {
 			return left + right;
 		} else if (op == "sub") {
@@ -56,6 +68,10 @@ export function Levolve(lsystem, iterations) {
 
 			for (var a = 0; a < args.length; a++) {
 				var value = evaluate_expression(state, args[a]);
+                if ( isNaN(value) ) {
+                    console.log("Nan found evalating symbol: ", symbol, args[a]);
+                    return 0
+                }
 				handle_args.push(value);
 			}
 
@@ -139,8 +155,14 @@ export function Lexecute(lsystem, handles) {
 			var type = symbol["type"];
 			if (type == "move" || type == "rotate") {
 				var args = symbol["arguments"];
-				handles[type](args);
-			}
+                var evaluated_args = [];
+                for ( var q = 0; q < args.length; q++ ) {
+                    evaluated_args.push(evaluate_expression({}, args[q]));
+                }
+				handles[type](evaluated_args);
+			} else if ( type == "push" || type == "pop" ) {
+                handles[type]();
+            }
 		}
 	}
 }

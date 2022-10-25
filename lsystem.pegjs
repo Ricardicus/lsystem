@@ -71,20 +71,30 @@ multiplicative
 
 primary
   = float
+  / functionCall
   / integer
   / id:identifier {
     return id;  
   }
   / "(" _ expr:expression _ ")" {
     return {
-	"type" : "integer" , "value" : expr};
+	"type" : "int" , "value" : expr};
     }
+
+functionCall
+  = id:identifier _ "(" args:arguments ")" {
+    return {
+        "type" : "function",
+        "id" : id.value,
+        "args" : args
+    };
+  }
 
 identifier
     = id:[a-zA-Z]+ {
-	return {
-	    "type" : "id", "value" : id[0]
-	};
+	    return {
+	        "type" : "id", "value" : id.join("")
+	    };
     }
 
 float
