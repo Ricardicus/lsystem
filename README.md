@@ -18,8 +18,7 @@ https://gpfault.net/posts/generating-trees.txt.html
 
 This is what it looks like today (2022-10-25):
 
-![Skärmavbild 2022-10-25 kl  22 24 59](https://user-images.githubusercontent.com/14809962/197874690-bc14656c-de14-4a2f-920d-eaa4b9ffb689.png)
+![Skärmavbild 2022-10-25 kl  22 26 38](https://user-images.githubusercontent.com/14809962/197874971-be6801be-25a6-42d4-ba2e-db71df85d485.png)
 
 I will try to add animation next.
 And perhaps more functions, now only random(start, end) as been added.
-
