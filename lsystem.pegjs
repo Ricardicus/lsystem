@@ -99,6 +99,7 @@ identifier
 
 float
     = left:[0-9]+ "." right:[0-9]+ { return parseFloat(left.join("") + "." +   right.join("")); }
+   / "-" left:[0-9]+ "." right:[0-9]+ { return -1*parseFloat(left.join("") + "." +   right.join("")); }
 
 integer 
   = digits:[0-9]+ {

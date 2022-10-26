@@ -34,6 +34,10 @@ class Turtle extends Component {
 		this.x = this.canvas.width / 2;
 		this.y = this.canvas.height * 0.9;	// Executing
 		Lexecute({ lstring: this.lstringExe }, this.handles);
+		if (this.drawThread != null) {
+			clearTimeout(this.drawThread);
+		}
+		this.drawThread = setTimeout(this.draw, 0);
 	}
 
 	componentDidMount() {
@@ -47,13 +51,14 @@ class Turtle extends Component {
 		this.moveFactor = 0.001 * this.canvas.height;
 		this.ctx = this.canvas.getContext("2d");
 		// Generating the instructions
+      console.log("Turle attempting to parse:",this.props.lstring);
 		var res = LParser(this.props.lstring);
 		this.lstringExe = res.value;
 
 		if (this.drawThread != null) {
-			clearInterval(this.drawThread);
+			clearTimeout(this.drawThread);
 		}
-		this.drawThread = setInterval(this.draw, 200);
+		this.drawThread = setTimeout(this.draw, 0);
 	}
 
 	render() {

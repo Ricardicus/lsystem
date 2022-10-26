@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 
 import { parse as LParser } from '../lsystem';
 import { Levolve, LexportAsString } from '../L';
-import { Stack } from '../stack.js';
 import Turtle from './turtle.jsx';
+import LSystemInput from './lsystemInput.jsx';
 
 class LSystem extends Component {
 
@@ -11,11 +11,8 @@ class LSystem extends Component {
 		super(props);
 		this.state = {
 			LSystemString: this.props.lsystemstring,
-			currentText: this.props.lsystemstring,
 			lsystemExpanded: null,
-			chosenDepth: 10
 		};
-		this.stack = new Stack();
 		this.handleNewLSystem = this.handleNewLSystem.bind(this);
 		this.handleNewInput = this.handleNewInput.bind(this);
 	}
@@ -29,12 +26,11 @@ class LSystem extends Component {
 		this.setState({ lsystemExpanded: lsystemExpanded });
 	}
 
-	handleNewLSystem() {
-		var newLsystem = document.getElementById("LSystemTextArea").value;
+	handleNewLSystem(newLsystem, depth) {
 		var LSystemString = newLsystem;
 		var result = LParser(LSystemString);
 		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result["rules"], stack: null };
-		Levolve(lsystem, this.state.chosenDepth);
+		Levolve(lsystem, depth);
 		var lsystemExpanded = LexportAsString(lsystem);
 
 		this.setState({
@@ -56,19 +52,9 @@ class LSystem extends Component {
 		return (
 			<div>
 				<Turtle lstring={this.state.lsystemExpanded} />
-				<p>L system rule:</p>
-				<textarea style={{ width: "20%" }}
-					rows="12"
-					id="LSystemTextArea"
-					value={this.state.currentText}
-					onChange={this.handleNewInput}
-				></textarea><br />
-				<small>depth: </small>
-				<input type="number" style={{ width: "40px" }} value={this.state.chosenDepth} onChange={
-					e => {this.setState({ chosenDepth: e.target.value }); this.handleNewLSystem();}
-				}></input><br />
-				<button onClick={this.handleNewLSystem}>Generate</button>
-				<br /><br />
+            <LSystemInput 
+            lsystemstring={this.state.LSystemString}
+            onHandleNewLSystem={this.handleNewLSystem} />
 			</div>);
 	}
 
