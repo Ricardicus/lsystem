@@ -16,9 +16,8 @@ The goal is to generate interesting patterns..
 This is where i ATTEMPT to go with this:
 https://gpfault.net/posts/generating-trees.txt.html
 
-This is what it looks like today (2022-10-25):
+# Link to DEMO
 
-![Skärmavbild 2022-10-25 kl  22 26 38](https://user-images.githubusercontent.com/14809962/197874971-be6801be-25a6-42d4-ba2e-db71df85d485.png)
+Here is a link to a demo version:
 
-I will try to add animation next.
-And perhaps more functions, now only random(start, end) as been added.
+[https://me.ricardicus.se/lsystem](https://me.ricardicus.se/lsystem)
