@@ -31,7 +31,7 @@ class LSystemInput extends Component {
 		return (
 			<div>
 				<p>L system rule:</p>
-				<textarea style={{ width: "20%", minWidth:"100px" }}
+				<textarea style={{ width: "20%", minWidth:"200px" }}
 					rows="12"
 					id="LSystemTextArea"
 					value={this.state.currentText}
