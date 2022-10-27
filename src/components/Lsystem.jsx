@@ -67,6 +67,7 @@ class LSystem extends Component {
                depth={this.props.depth}
 					lsystemstring={this.state.LSystemString}
 					onHandleNewLSystem={this.handleNewLSystem} />
+<a href="https://github.com/Ricardicus/lsystem">Source code</a><br/><br/><br/>
 			</div>);
 	}
 

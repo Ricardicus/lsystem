@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { parse as LParser } from '../lsystem';
 import { Lexecute } from '../L';
 import { Stack } from '../stack.js';
 

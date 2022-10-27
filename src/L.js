@@ -246,8 +246,13 @@ export function Lexecute(lsystem, handles) {
             var args = symbol["arguments_computed"];
             var evaluated_args = [];
             for (var q = 0; q < args.length; q++) {
-               var arg = evaluate_expression({}, args[q], handles);
-               if ( isNaN(arg) ) {
+               var arg;
+	       if ( typeof args[q] == "number" ) {
+	         arg = args[q];
+	       } else {
+	         arg = evaluate_expression({}, args[q], handles);
+	       }
+	       if ( isNaN(arg) ) {
                   console.log("Nan found!", args, symbol);
                   console.log("arg:",args[q]);
                   throw Error("Noo!");
