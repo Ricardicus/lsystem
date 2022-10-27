@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 
-import { parse as LParser } from '../lsystem';
-import { Levolve, LexportAsString } from '../L';
-import Turtle from './turtle.jsx';
-
 class LSystemInput extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			currentText: this.props.lsystemstring,
-			chosenDepth: 10
+			chosenDepth: this.props.depth
 		};
       this.newDepth = this.newDepth.bind(this);
 		this.handleNewInput = this.handleNewInput.bind(this);
@@ -35,7 +31,7 @@ class LSystemInput extends Component {
 		return (
 			<div>
 				<p>L system rule:</p>
-				<textarea style={{ width: "20%" }}
+				<textarea style={{ width: "20%", minWidth:"100px" }}
 					rows="12"
 					id="LSystemTextArea"
 					value={this.state.currentText}

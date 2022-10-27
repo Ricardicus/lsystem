@@ -206,7 +206,7 @@ function peg$parse(input, options) {
         },
       peg$c33 = function(expr) {
           return {
-      	"type" : "int" , "value" : expr};
+      	"type" : "paranthesis" , "value" : expr};
           },
       peg$c34 = function(id, args) {
           return {

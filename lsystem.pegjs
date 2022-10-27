@@ -78,7 +78,7 @@ primary
   }
   / "(" _ expr:expression _ ")" {
     return {
-	"type" : "int" , "value" : expr};
+	"type" : "paranthesis" , "value" : expr};
     }
 
 functionCall

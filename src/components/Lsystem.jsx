@@ -11,7 +11,8 @@ class LSystem extends Component {
 		super(props);
 		this.state = {
 			LSystemString: this.props.lsystemstring,
-			lsystemExpanded: null,
+         lstring: null,
+         error: <div></div>
 		};
 		this.handleNewLSystem = this.handleNewLSystem.bind(this);
 		this.handleNewInput = this.handleNewInput.bind(this);
@@ -23,20 +24,29 @@ class LSystem extends Component {
 		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result["rules"], stack: null };
 		Levolve(lsystem, this.props.depth);
 		var lsystemExpanded = LexportAsString(lsystem);
-		this.setState({ lsystemExpanded: lsystemExpanded });
+		this.setState({
+         lsystemExpanded: lsystemExpanded,
+         lstring: lsystem.lstring
+      });
 	}
 
 	handleNewLSystem(newLsystem, depth) {
 		var LSystemString = newLsystem;
+      try {
 		var result = LParser(LSystemString);
+      } catch(e) {
+        this.setState({
+           error: (<small style={{color: "red"}}>Parsing error:<br/> {"" + e}</small>)
+        });
+        return;
+      }
 		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result["rules"], stack: null };
 		Levolve(lsystem, depth);
-		var lsystemExpanded = LexportAsString(lsystem);
-
 		this.setState({
-			lsystemExpanded: lsystemExpanded,
-			LSystemString: newLsystem
-		});
+			LSystemString: newLsystem,
+         lstring: lsystem.lstring,
+		   error: ""
+      });
 	}
 
 	handleNewInput(val) {
@@ -46,15 +56,17 @@ class LSystem extends Component {
 	}
 
 	render() {
-		if (this.state.lsystemExpanded == null) {
+		if (this.state.lstring == null) {
 			return "<p>Loading...</p>";
 		}
 		return (
 			<div>
-				<Turtle lstring={this.state.lsystemExpanded} />
-            <LSystemInput 
-            lsystemstring={this.state.LSystemString}
-            onHandleNewLSystem={this.handleNewLSystem} />
+				<Turtle lstring={this.state.lstring} />
+         {this.state.error}
+            <LSystemInput
+               depth={this.props.depth}
+					lsystemstring={this.state.LSystemString}
+					onHandleNewLSystem={this.handleNewLSystem} />
 			</div>);
 	}
 
