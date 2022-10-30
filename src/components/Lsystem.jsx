@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { parse as LParser } from '../lsystem';
-import { Levolve, LexportAsString } from '../L';
+import { LevolveSystems, LexportAsString } from '../L';
 import Turtle from './turtle.jsx';
 import LSystemInput from './lsystemInput.jsx';
 
@@ -21,27 +21,29 @@ class LSystem extends Component {
 	componentDidMount() {
 		var LSystemString = this.state.LSystemString;
 		var result = LParser(LSystemString);
-		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result["rules"], stack: null };
-		Levolve(lsystem, this.props.depth);
+		console.log(result);
+		result = result;
+		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result[0]["rules"], rules: result[0]["rules"]};
+		LevolveSystems([lsystem], this.props.depth);
 		var lsystemExpanded = LexportAsString(lsystem);
 		this.setState({
-         lsystemExpanded: lsystemExpanded,
-         lstring: lsystem.lstring
-      });
+         		lsystemExpanded: lsystemExpanded,
+         		lstring: lsystem.lstring
+      		});
 	}
 
 	handleNewLSystem(newLsystem, depth) {
 		var LSystemString = newLsystem;
-      try {
-		var result = LParser(LSystemString);
-      } catch(e) {
-        this.setState({
-           error: (<small style={{color: "red"}}>Parsing error:<br/> {"" + e}</small>)
-        });
-        return;
-      }
+      		try {
+			var result = LParser(LSystemString);
+      		} catch(e) {
+        		this.setState({
+           			error: (<small style={{color: "red"}}>Parsing error:<br/> {"" + e}</small>)
+        		});
+        		return;
+      		}
 		var lsystem = { state: { g: 0, a: 0, c: 0 }, lstring: result["rules"], stack: null };
-		Levolve(lsystem, depth);
+		LevolveSystems([lsystem], 10);
 		this.setState({
 			LSystemString: newLsystem,
          lstring: lsystem.lstring,

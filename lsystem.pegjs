@@ -4,9 +4,15 @@
   }
 }
 
+lsystems
+    = first:lsystem _ rest:(lsystem)* {
+	return [first].concat(rest.map(function(v){ return v; }));
+    }
 lsystem
-    = AxiomToken _ "(" _ state:states _ ")" _ "->" _ rules:symbols {
-	return { "type" : "lsystem", "state" : state, "rules" : rules };
+    = AxiomTokenA _ "(" _ state:states _ ")" _ "->" _ rules:symbols {
+	return { "type" : "lsystem", "state" : state, "rules" : rules, axiom : "A" };
+    } / AxiomTokenB _ "(" _ state:states _ ")" _ "->" _ rules:symbols {
+	return { "type" : "lsystem", "state" : state, "rules" : rules, axiom : "B" };
     } / string:symbols {
 	return { "type" : "lstring", "value" : string };
     }
@@ -33,7 +39,10 @@ symbol
       _ MoveToken "(" _ args:arguments _ ")" {
 	return { "type" : "move", "arguments" : args };
     } /
-     _ AxiomToken "(" _ state:states _ ")" {
+     _ AxiomTokenA "(" _ state:states _ ")" {
+	return { "type" : "axiom", "state" : state };
+    } /
+     _ AxiomTokenB "(" _ state:states _ ")" {
 	return { "type" : "axiom", "state" : state };
     } /
       _ StackPushToken {
@@ -115,6 +124,7 @@ _  = [ \t\r\n]*
 
 RotateToken     = "rot" 
 MoveToken       = "mov"
-AxiomToken      = "L" 
+AxiomTokenA     = "A" 
+AxiomTokenB     = "B"
 StackPushToken  = "["
 StackPopToken   = "]"
