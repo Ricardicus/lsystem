@@ -131,9 +131,6 @@ function evaluate_expression(state, expression, handles) {
 
 export function LevolveSystems(lsystems, iterations) {
    var lsystemStates = [];
-   var lsystemCopy = [...lsystems]
-   console.log("EVOLVING THIS:", lsystemCopy, "iterations: ", iterations);
-   console.log(lsystems);
    var axioms = [];
    var axiomRules = {};
    for (var i = 0; i < lsystems.length; i++) {
@@ -157,9 +154,7 @@ export function LevolveSystems(lsystems, iterations) {
          }
          lsystemStates[i] = lsystem.state;
          lsystems[i].lstring = lsystem.lstring;
-         console.log("ITERATION");
       }
-      console.log("ITS: ", its);
    }
 }
 

@@ -140,7 +140,7 @@ A(g=0)`, depth: 5
 					e => {this.newDepth(e.target.value);}
 				}></input>
 				{depthNotice}<br/>
-         <small style={{"font-size":"50%"}}>Configurations</small><br/>
+         <small style={{"font-size":"50%"}}>Try one of these:</small><br/>
          <select onChange={(e) => {this.newConfig(e);}}>
          <option value={0}>Tree in wind</option>
          <option value={1}>Seaweed</option>
