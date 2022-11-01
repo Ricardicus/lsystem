@@ -41,7 +41,6 @@ There are some functions available to make this happen.
 I learned about L systems via this blog post:
 https://gpfault.net/posts/generating-trees.txt.html
 
-Further reading can be found here:
+Further reading can be found here, on a wonderful website dedicated to The Algorithmic Beauty of Plants:
 http://algorithmicbotany.org/papers/#abop
 
-( A wonderful website dedicated to The Algorithmic Beauty of Plants )
