@@ -1,5 +1,3 @@
-import { Stack } from './stack.js';
-
 function print_expression(expression) {
    if (typeof expression == "number") {
       return "" + expression;
@@ -64,7 +62,7 @@ function evaluate_expression(state, expression, handles) {
       }
       if (type == "function") {
          var funcID = expression.id;
-         var args = expression.args;
+         var args = [...expression.args];
          if (funcID == "random") {
             if (args.length == 1) {
                return evaluate_expression(state, args[0], handles) * Math.random();
@@ -82,7 +80,7 @@ function evaluate_expression(state, expression, handles) {
             }
          } else if (funcID == "sin") {
             var arg = evaluate_expression(state, args[0], handles);
-            if ( typeof arg == "number" ) {
+            if (typeof arg == "number") {
                return Math.sin(arg * Math.PI * 2 / 360.0);
             } else {
                return expression;
@@ -90,12 +88,11 @@ function evaluate_expression(state, expression, handles) {
          } else if (funcID == "cos") {
 
             var arg = evaluate_expression(state, args[0], handles);
-            if ( typeof arg == "number" ) {
+            if (typeof arg == "number") {
                return Math.sin(arg * Math.PI * 2 / 360.0);
             } else {
                return expression;
             }
- 
          }
          return 0;
       }
@@ -116,36 +113,61 @@ function evaluate_expression(state, expression, handles) {
             return left * right;
          } else if (op == "div") {
             return left / right;
+         } else {
+            throw Error("Invalid operation!");
          }
-      } else if ( typeof left == "number" ) {
+      } else if (typeof left == "number") {
          expression.left = left;
          return expression;
-      } else if ( typeof right == "number" ) {
+      } else if (typeof right == "number") {
          expression.right = right;
          return expression;
       } else {
          return expression
       }
    }
-   throw new Error("Invalid expression");
+   throw Error("Invalid expression");
 }
 
-export function Levolve(lsystem, iterations) {
-   var lstring = lsystem.lstring;
-   if (lsystem.stack == null) {
-      lsystem.stack = new Stack();
-   }
-   var stack = lsystem.stack;
-   if (stack.isEmpty()) {
-      var state = lsystem.state;
+export function LevolveSystems(lsystems, iterations) {
+   var lsystemStates = [];
+   var axioms = [];
+   var axiomRules = {};
+   for (var i = 0; i < lsystems.length; i++) {
       var initialState = {};
-      for (const [key, value] of Object.entries(state)) {
-         initialState[key] = value;
+      for ( var q = 0; q < lsystems[i].state.length; q++ ) {
+         initialState[lsystems[i].state[q].id] = evaluate_expression({}, lsystems[i].state[q].value, null);
       }
-      stack.push(initialState);
+      lsystemStates.push(initialState);
+      axioms.push(lsystems[i].axiom);
+      axiomRules[lsystems[i].axiom] = lsystems[i].rules;
    }
-   var state = stack.pop();
+   for (var its = 0; its < iterations; its++) {
+      for (var i = 0; i < lsystems.length; i++) {
+         var lsystem = lsystems[i];
+         if ( its == 0 ) {
+            lsystem.state = lsystemStates[i];
+         }
+         for ( var q = 0; q < axioms.length; q++ ) {
+            var axiom = axioms[q];
+            LevolveSystem(lsystem, axiom, axiomRules);
+         }
+         lsystemStates[i] = lsystem.state;
+         lsystems[i].lstring = lsystem.lstring;
+      }
+   }
+}
+
+export function LevolveSystem(lsystem, axiom, axiomRules) {
+   var lstring = lsystem.lstring;
+   if (lstring === undefined) {
+      lstring = [...lsystem.rules];
+   }
+   var state = lsystem.state;
    var newlString = [];
+   if (lstring === undefined) {
+      throw Error("NEJ!");
+   }
    for (var i = 0; i < lstring.length; i++) {
       var symbol = {};
       Object.assign(symbol, lstring[i]);
@@ -154,35 +176,67 @@ export function Levolve(lsystem, iterations) {
          var args = symbol["arguments"];
          var handle_args = [];
 
-         for (var a = 0; a < args.length; a++) {
-            var value = evaluate_expression(state, args[a], null);
-            handle_args.push(value);
+         if ( typeof symbol.arguments_computed === 'undefined' ) {
+            for (var a = 0; a < args.length; a++) {
+               var value = evaluate_expression(state, args[a], null);
+               handle_args.push(value);
+            }
+            symbol["arguments_computed"] = handle_args;
          }
-
-         symbol["arguments_computed"] = handle_args;
          newlString.push(symbol);
       } else if (type == "axiom") {
-         var newState = symbol["state"];
-         var newStateS = {}
-         var lstringNew = [...lstring];
+         if (symbol.axiom == axiom) {
+            // Copy state, evaluate new state
+            // Expand, evaluate expressions,
+            var rules = axiomRules[axiom];
+            var newState = {};
+            for (const [key, value] of Object.entries(state)) {
+               newState[key] = value;
+            }
+            if (typeof symbol.innerState !== 'undefined') {
+               for (const [key, value] of Object.entries(symbol.innerState)) {
+                  newState[key] = value;
+               }
+            }
+            // Update the new state and store it in this symbol
+            var newInnerState = {};
+            for (var qq = 0; qq < symbol.state.length; qq++) {
+               var id = symbol.state[qq].id;
+               var value = evaluate_expression(newState, symbol.state[qq].value, null);
+               newInnerState[id] = value;
+            }
+            for (var q = 0; q < rules.length; q++) {
+               var innerSymbol = {};
+               Object.assign(innerSymbol, rules[q]);
+               var innerType = innerSymbol.type;
+               if (innerType == "push" || innerType == "pop") {
+                  newlString.push(innerSymbol);
+               } else if (innerType == "move" || innerType == "rotate") {
+                  var args = innerSymbol["arguments"];
+                  var handle_args = [];
 
-         for (var q = 0; q < newState.length; q++) {
-            var key = newState[q].id;
-            var value = newState[q].value;
-            newStateS[key] = evaluate_expression(state, value, null);
-         }
-         if (iterations > 0) {
-            stack.push(newStateS);
-            var newlsystem = { lstring: lstringNew, stack: stack }
+                  for (var a = 0; a < args.length; a++) {
+                     var value = evaluate_expression(newInnerState, args[a], null);
+                     handle_args.push(value);
+                  }
 
-            Levolve(newlsystem, iterations - 1);
-            newlString.push(newlsystem.lstring);
+                  innerSymbol["arguments_computed"] = handle_args;
+                  newlString.push(innerSymbol);
+               } else if (innerType == "axiom") {
+                  innerSymbol.innerState = {};
+                  for (const [key, value] of Object.entries(newInnerState)) {
+                     innerSymbol.innerState[key] = value;
+                  }
+                  newlString.push(innerSymbol);
+               }
+            }
+         } else {
+            // Another axiom, let it be
+            newlString.push(symbol);
          }
       } else if (type == "push") {
-         lsystem.stack.push(state);
          newlString.push(symbol);
       } else if (type == "pop") {
-         state = lsystem.stack.pop();
          newlString.push(symbol);
       }
    }
@@ -247,14 +301,15 @@ export function Lexecute(lsystem, handles) {
             var evaluated_args = [];
             for (var q = 0; q < args.length; q++) {
                var arg;
-	       if ( typeof args[q] == "number" ) {
-	         arg = args[q];
-	       } else {
-	         arg = evaluate_expression({}, args[q], handles);
-	       }
-	       if ( isNaN(arg) ) {
+               if (typeof args[q] == "number") {
+                  arg = args[q];
+               } else {
+                  arg = evaluate_expression({}, args[q], handles);
+               }
+               if (isNaN(arg)) {
                   console.log("Nan found!", args, symbol);
-                  console.log("arg:",args[q]);
+                  console.log("arg:", args[q]);
+                  console.log("lstring[i]", lstring[i], "i: " , i, "lstring", lstring);
                   throw Error("Noo!");
                }
                evaluated_args.push(arg);
