@@ -10,46 +10,90 @@ class LSystemInput extends Component {
 		};
       // Some presaved configurations:
       this.presavedConfigs = [{
-         lsystem: `L(g=0) -> 
+         lsystem: `A(g=0) -> 
 mov(random(100/(g+1)-10,100/(g+1)+10),5/(g+1))
 rot((3/(g+1))*cos(context(0)))
-[rot(random(-25,-15))L(g=g+1)] 
+[rot(random(-25,-15))A(g=g+1)] 
 rot((3/(g+1))*cos(context(0)))
-[rot(random(15,25))L(g=g+1)]
+[rot(random(15,25))A(g=g+1)]
 rot((3/(g+1))*sin(context(0)))`,
          depth: 12
       },{
-         lsystem: `L(g=0) ->
+         lsystem: `A(g=0) ->
 rot(0.5 + 0.1*(0.5*sin(context(0)*7)),1)
 mov(5,1)
-L(g=0)
-L(g=0)
+A(g=0)
+A(g=0)
 rot(-22.5)
 [
   rot(-22.5)
-  L(g=0)
+  A(g=0)
   rot(22.5)
-  L(g=0)
+  A(g=0)
   rot(22.5)
-  L(g=0)
+  A(g=0)
 ]
 rot(22.5)
 [
   rot(22.5)
-  L(g=0)
+  A(g=0)
   rot(-22.5)
-  L(g=0)
+  A(g=0)
   rot(-22.5)
-  L(g=0)
+  A(g=0)
 ]`,
          depth: 5
       }, {
-         lsystem: `L(g=0) -> 
+         lsystem: `A(g=0) -> 
 mov(35,2)
-[rot(60)L(g=g+1)] 
-[rot(-60)L(g=g+1)]`,
+[rot(60)A(g=g+1)] 
+[rot(-60)A(g=g+1)]`,
          depth: 10
-      }
+      },
+         {
+         lsystem: `A(g=0) ->
+B(g=0)
+[rot(20)rot(sin(context(0)))A(g=0)]
+B(g=0)
+[rot(-20)rot(cos(context(0)*1.5))A(g=0)]
+rot(20)
+rot(sin(context(0)*1.5))
+A(g=0),
+B(g=0) ->
+mov(1,1)
+B(g=0)
+B(g=0)
+`, depth: 7
+         },{
+         lsystem: `A(g=0) ->
+B(g=0)
+rot(-22.5)
+rot(sin(context(0)*1.2)*0.5)
+[[A(g=0)]rot(22.5)rot(sin(context(0)*1.2)*0.5)A(g=0)]
+rot(22.5)
+B(g=0)
+[rot(22.5)rot(sin(context(0)*1.2)*0.5)B(g=0)A(g=0)]
+rot(-22.5)
+A(g=0),
+B(g=0) ->
+mov(3,1)
+B(g=0)
+B(g=0)
+
+`, depth: 5
+         },
+         {
+         lsystem: `A(g=0) ->
+mov(2,1)
+rot(cos(context(0))*0.01)
+A(g=0)
+[rot(25.7)rot(cos(context(0)))A(g=0)]
+A(g=0)
+[rot(-25.7)rot(cos(context(0)))A(g=0)]
+A(g=0)`, depth: 5
+         }
+
+
       ];
 
       this.newConfig = this.newConfig.bind(this);
@@ -84,7 +128,7 @@ mov(35,2)
       }
 		return (
 			<div>
-				<p>L system rule:</p>
+				<p>Lindenmayer system:</p>
 				<textarea style={{ width: "20%", minWidth:"200px" }}
 					rows="12"
 					id="LSystemTextArea"
@@ -101,6 +145,9 @@ mov(35,2)
          <option value={0}>Tree in wind</option>
          <option value={1}>Seaweed</option>
          <option value={2}>Honeycomb</option>
+         <option value={3}>Weeds 1</option>
+         <option value={4}>Weeds 2</option>
+         <option value={5}>Weeds 3</option>
          </select>
          <br/>
 				<button onClick={() => { this.props.onHandleNewLSystem(this.state.currentText, this.state.chosenDepth);}}>Generate</button>

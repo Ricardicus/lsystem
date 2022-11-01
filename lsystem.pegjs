@@ -5,15 +5,15 @@
 }
 
 lsystems
-    = first:lsystem _ rest:(lsystem)* {
-	return [first].concat(rest.map(function(v){ return v; }));
+    = first:lsystem _ rest:("," _ lsystem)* {
+	return [first].concat(rest.map(function(v){ if ( v ) {return v[2];} }));
     }
 lsystem
-    = AxiomTokenA _ "(" _ state:states _ ")" _ "->" _ rules:symbols {
+    = AxiomTokenA _ "(" _ state:states _ ")" _ "->" _ rules:symbols _ {
 	return { "type" : "lsystem", "state" : state, "rules" : rules, axiom : "A" };
-    } / AxiomTokenB _ "(" _ state:states _ ")" _ "->" _ rules:symbols {
+    } / AxiomTokenB _ "(" _ state:states _ ")" _ "->" _ rules:symbols _ {
 	return { "type" : "lsystem", "state" : state, "rules" : rules, axiom : "B" };
-    } / string:symbols {
+    } / string:symbols _ {
 	return { "type" : "lstring", "value" : string };
     }
 
@@ -40,10 +40,10 @@ symbol
 	return { "type" : "move", "arguments" : args };
     } /
      _ AxiomTokenA "(" _ state:states _ ")" {
-	return { "type" : "axiom", "state" : state };
+	return { "type" : "axiom", "state" : state, "axiom" : "A" };
     } /
      _ AxiomTokenB "(" _ state:states _ ")" {
-	return { "type" : "axiom", "state" : state };
+	return { "type" : "axiom", "state" : state, "axiom" : "B" };
     } /
       _ StackPushToken {
 	return { "type" : "push" };
