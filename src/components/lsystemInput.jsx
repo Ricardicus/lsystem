@@ -51,49 +51,232 @@ mov(35,2)
          depth: 10
       },
          {
-         lsystem: `A(g=0) ->
-B(g=0)
-[rot(20)rot(sin(context(0)))A(g=0)]
-B(g=0)
-[rot(-20)rot(cos(context(0)*1.5))A(g=0)]
+         lsystem: `A() ->
+B()
+[rot(20)rot(sin(context(0)))A()]
+B()
+[rot(-20)rot(cos(context(0)*1.5))A()]
 rot(20)
 rot(sin(context(0)*1.5))
-A(g=0),
-B(g=0) ->
+A(),
+B() ->
 mov(1,1)
-B(g=0)
-B(g=0)
+B()
+B()
 `, depth: 7
          },{
-         lsystem: `A(g=0) ->
-B(g=0)
+         lsystem: `A() ->
+B()
 rot(-22.5)
 rot(sin(context(0)*1.2)*0.5)
-[[A(g=0)]rot(22.5)rot(sin(context(0)*1.2)*0.5)A(g=0)]
+[[A()]rot(22.5)rot(sin(context(0)*1.2)*0.5)A()]
 rot(22.5)
-B(g=0)
-[rot(22.5)rot(sin(context(0)*1.2)*0.5)B(g=0)A(g=0)]
+B()
+[rot(22.5)rot(sin(context(0)*1.2)*0.5)B()A()]
 rot(-22.5)
-A(g=0),
-B(g=0) ->
+A(),
+B() ->
 mov(3,1)
-B(g=0)
-B(g=0)
-
+B()
+B()
 `, depth: 5
          },
          {
-         lsystem: `A(g=0) ->
+         lsystem: `A() ->
 mov(2,1)
 rot(cos(context(0))*0.01)
-A(g=0)
-[rot(25.7)rot(cos(context(0)))A(g=0)]
-A(g=0)
-[rot(-25.7)rot(cos(context(0)))A(g=0)]
-A(g=0)`, depth: 5
+A()
+[rot(25.7)rot(cos(context(0)))A()]
+A()
+[rot(-25.7)rot(cos(context(0)))A()]
+A()`, depth: 5
+         },
+         {
+         lsystem: `A(g=1) ->
+A(g=g+1)
+mov(1,1)
+B(g=g+1)
+[rot(25.7)rot(cos(context(0))*g)A(g=g+1)][rot(-25.7)rot(cos(context(0))*g)A(g=g+1)],
+B(g=1) ->
+B(g=g+1)
+rot(sin(context(0)*1.1)*0.01*g)
+[rot(-25.7)rot(sin(context(0))*g)mov(6,1)][rot(25.7)rot(cos(context(0))*g)mov(6,1)]
+mov(3,1)
+B(g=g+1)`, depth: 5
+         },
+         {
+            lsystem: `C() ->
+rot(-30)
+A(),
+A() ->
+B()
+rot(120)
+B()
+rot(120)
+B(),
+B() ->
+mov(1,1)
+B()
+rot(-60)
+B()
+rot(120)
+B()
+rot(-60)
+B()`, depth: 6
+         },
+         {
+            lsystem:
+            `A() ->
+rot(45)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90),
+B() ->
+mov(3,1)
+B()
+rot(-90)
+B()
+rot(90)
+B()
+rot(90)
+B()
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(90)
+B()`,
+            depth: 4
+         },
+         {
+            lsystem: `A() ->
+rot(90)
+mov(5,1)
+rot(-45)
+rot(-45)
+B()
+mov(5,1)
+rot(-45)
+rot(-45)
+mov(5,1)
+rot(-45)
+rot(-45)
+B()
+mov(5,1),
+B() ->
+B()
+mov(5,1)
+rot(45)
+mov(5,1)
+rot(45)
+B()
+mov(5,1)
+rot(-45)
+rot(-45)
+mov(5,1)
+rot(-45)
+rot(-45)
+B()
+mov(5,1)
+rot(45)
+mov(5,1)
+rot(45)
+B()`,
+               depth: 5
+         },{
+            lsystem: `A() ->
+rot(-90)
+mov(5,1)
+rot(90)
+B()
+mov(5,1)
+rot(90)
+mov(5,1)
+rot(90)
+B()
+mov(5,1),
+B() ->
+B()
+mov(5,1)
+rot(-90)
+mov(5,1)
+rot(90)
+mov(5,1)
+rot(-90)
+B()
+mov(5,1)
+rot(90)
+mov(5,1)
+rot(90)
+B()
+mov(5,1)
+rot(-90)
+mov(5,1)
+rot(90)
+mov(5,1)
+rot(-90)
+B()`, depth: 5},
+            {
+               lsystem: `A() ->
+rot(90)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90)
+B(),
+B() ->
+mov(3,1)
+B()
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(-90)
+B()
+rot(90)
+B()`,
+depth: 5
+         },
+         {
+            lsystem: `A() ->
+rot(-30)
+B(),
+B() ->
+D()
+mov(1,1)
+rot(60)
+E()
+mov(1,1)
+rot(60)
+D(),
+C() ->
+E()
+mov(1,1)
+rot(-60)
+D()
+mov(1,1)
+rot(-60)
+E(),
+D() ->
+mov(1,1)
+C(),
+E() ->
+mov(1,1)
+B()`, depth: 7
          }
-
-
       ];
 
       this.newConfig = this.newConfig.bind(this);
@@ -148,6 +331,13 @@ A(g=0)`, depth: 5
          <option value={3}>Weeds 1</option>
          <option value={4}>Weeds 2</option>
          <option value={5}>Weeds 3</option>
+         <option value={6}>Weeds 4</option>
+         <option value={7}>Koch triangle</option>
+         <option value={8}>Koch Island</option>
+         <option value={9}>Sierpiński curve</option>
+         <option value={10}>Sierpiński square curve</option>
+         <option value={12}>Sierpiński arrowhead curve</option>
+         <option value={11}>Rings</option>
          </select>
          <br/>
 				<button onClick={() => { this.props.onHandleNewLSystem(this.state.currentText, this.state.chosenDepth);}}>Generate</button>
