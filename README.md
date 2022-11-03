@@ -36,6 +36,53 @@ There are some functions available to make this happen.
 | cos(x), sin(x)      | Trigonometric functions | Argument expression |
 | context(0)      | Return number of drawings, needed to accomplish animation | Argument expression |
 
+## Defining an axiom
+
+One can define a list of axioms, and the first one of these will be the one
+selected for expansion. So, the first axiom can be used as an initial state.
+One can define axioms like this:
+
+```
+A(g=0) ->
+mov(100/(g+1),1)
+rot(10)
+A(g=g+1)
+```
+
+If expanded 4 times, this will look like this:
+
+```
+mov(100, 1)
+rot(10)
+mov(50, 1)
+rot(10)
+mov(33.3, 1)
+rot(10)
+mov(25, 1)
+rot(10)
+```
+
+One does not need to include a variable like "g" in the example above.
+Using multiple rules can be achieved by adding a "," between the axiom definitions:
+
+```
+A() -> 
+mov(10, 1)
+B(),
+B() -> 
+rot(45)
+A()
+```
+
+Expanded two times will look like this:
+
+```
+mov(10, 1)
+rot(45)
+mov(10, 1)
+B()
+```
+
 # Inspiration
 
 I learned about L systems via this blog post:
