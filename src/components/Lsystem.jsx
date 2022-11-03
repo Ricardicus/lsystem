@@ -66,7 +66,7 @@ class LSystem extends Component {
                lsystemstring={this.state.LSystemString}
                onHandleNewLSystem={this.handleNewLSystem} />
             <br />
-            <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem">Link to my source code</a><br /><br /><br />
+            <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem">Link to source code</a><br /><br /><br />
          </div>);
    }
 
