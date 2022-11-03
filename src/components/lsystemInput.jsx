@@ -105,24 +105,25 @@ mov(3,1)
 B(g=g+1)`, depth: 5
          },
          {
-            lsystem: `C() ->
+            lsystem: `A() ->
 rot(-30)
-A(),
-A() ->
-B()
-rot(120)
-B()
-rot(120)
 B(),
 B() ->
-mov(1,1)
-B()
-rot(-60)
-B()
+C()
 rot(120)
-B()
+C()
+rot(120)
+C(),
+C() ->
+C()
+mov(2,1)
 rot(-60)
-B()`, depth: 6
+C()
+rot(120)
+C()
+rot(-60)
+mov(2,1)
+C()`, depth: 5
          },
          {
             lsystem:
