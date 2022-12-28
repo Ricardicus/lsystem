@@ -67,6 +67,7 @@ class LSystem extends Component {
                onHandleNewLSystem={this.handleNewLSystem} />
             <br />
             <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem">Link to source code</a><br /><br /><br />
+            <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem-3d">3D version (using webGL)</a><br /><br /><br />
          </div>);
    }
 
