@@ -311,7 +311,9 @@ B()`, depth: 7
          depthNotice = <div><small style={{"color":"red", "font-size":"50%"}}>Higher depths take longer time to generate</small><br/></div>
       }
 		return (
-			<div style={{position:"absolute", top:"0%"}}>
+			<div style={{position:"absolute", top:"0%", paddingLeft: "10px"}}>
+            <center>
+         <div id="selector-change-div">
 				<p>Lindenmayer system:</p>
 				<textarea style={{ width: "20%", minWidth:"200px" }}
 					rows="12"
@@ -343,9 +345,29 @@ B()`, depth: 7
          <br/>
 				<button onClick={() => { this.props.onHandleNewLSystem(this.state.currentText, this.state.chosenDepth);}}>Generate</button>
             <br />
-            <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem">Link to source code</a><br /><br /><br />
-            <a style={{color:"white"}} href="https://me.ricardicus.se/lsystem-3d">3D version (webGL)</a><br /><br /><br />
-			</div>);
+            <a style={{color:"white"}} href="https://github.com/Ricardicus/lsystem">Link to source code</a><br />
+            <a style={{color:"white"}} href="https://me.ricardicus.se/lsystem-3d">Link to 3D version (webGL)</a>
+			</div>
+
+            <button id="selector-change" value="hide" onClick={() => {
+               var c = document.getElementById("selector-change"); 
+               var d = document.getElementById("selector-change-div");
+               if ( c.value == "hide" ) { 
+                  c.value = "edit";
+                  c.innerHTML = "Edit";
+                  d.style.display = "none";
+               } else {
+                  c.value = "hide";
+                  c.innerHTML = "Hide";
+                  d.style.display = "inherit";
+               }
+            }}>Hide</button>
+
+
+         </center>
+         </div>
+      );
+      
 	}
 
 }
